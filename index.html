@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanto Aplo — Bientôt</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap');
+ 
+  :root {
+    --ink: #0d0a07;
+    --cream: #f5f0e8;
+    --gold: #c8a96e;
+    --gold-light: #e8d5a3;
+    --sienna: #8b4a2f;
+    --mist: rgba(200, 169, 110, 0.08);
+  }
+ 
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--cream);
+  }
+ 
+  /* ── Canvas grain overlay ── */
+  #grain {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: .45;
+  }
+ 
+  /* ── Background aurora ── */
+  .aurora {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(139,74,47,.35) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(200,169,110,.18) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(13,10,7,1) 40%, transparent 100%);
+    animation: auroraShift 14s ease-in-out infinite alternate;
+  }
+  @keyframes auroraShift {
+    0%   { filter: hue-rotate(0deg) brightness(1); }
+    50%  { filter: hue-rotate(8deg) brightness(1.08); }
+    100% { filter: hue-rotate(-5deg) brightness(.95); }
+  }
+ 
+  /* ── Floating orbs ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    animation: orbDrift linear infinite;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(200,169,110,.12), transparent 70%);
+    top: -100px; left: -100px;
+    animation-duration: 22s;
+  }
+  .orb-2 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(139,74,47,.18), transparent 70%);
+    bottom: -80px; right: -80px;
+    animation-duration: 18s;
+    animation-direction: reverse;
+  }
+  .orb-3 {
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(200,169,110,.1), transparent 70%);
+    top: 40%; left: 60%;
+    animation-duration: 30s;
+  }
+  @keyframes orbDrift {
+    0%   { transform: translate(0,0) scale(1); }
+    33%  { transform: translate(40px, -30px) scale(1.05); }
+    66%  { transform: translate(-20px, 50px) scale(.95); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+ 
+  /* ── Sound waves ── */
+  .waves-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 180px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    padding-bottom: 24px;
+    pointer-events: none;
+  }
+  .bar {
+    width: 2px;
+    background: linear-gradient(to top, var(--gold), transparent);
+    border-radius: 2px;
+    animation: wavePulse ease-in-out infinite alternate;
+    opacity: .55;
+    transform-origin: bottom;
+  }
+  @keyframes wavePulse {
+    0%   { transform: scaleY(var(--min)); }
+    100% { transform: scaleY(var(--max)); }
+  }
+ 
+  /* ── Stars ── */
+  .stars {
+    position: fixed; inset: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    width: 1px; height: 1px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    animation: starTwinkle ease-in-out infinite alternate;
+  }
+  @keyframes starTwinkle {
+    0%   { opacity: .1; transform: scale(1); }
+    100% { opacity: .8; transform: scale(1.8); }
+  }
+ 
+  /* ── Main content ── */
+  .scene {
+    position: fixed; inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+ 
+  /* Decorative rule */
+  .rule {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 3rem;
+    animation: ruleExpand 2.2s cubic-bezier(.16,1,.3,1) 0.4s forwards;
+  }
+  @keyframes ruleExpand {
+    to { width: 200px; }
+  }
+ 
+  /* Eyebrow */
+  .eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: .62rem;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp .9s ease 1s forwards;
+    margin-bottom: 1.4rem;
+  }
+ 
+  /* Main title */
+  .title-wrap {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+  }
+  .title-main {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 600;
+    letter-spacing: .06em;
+    line-height: 1;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) 1.2s forwards;
+    position: relative;
+  }
+  .title-main .gold-letter {
+    color: var(--gold);
+    display: inline-block;
+    animation: goldPulse 4s ease-in-out infinite;
+  }
+  @keyframes goldPulse {
+    0%,100% { text-shadow: 0 0 30px rgba(200,169,110,.4); }
+    50%      { text-shadow: 0 0 60px rgba(200,169,110,.8), 0 0 120px rgba(200,169,110,.3); }
+  }
+ 
+  /* Subtitle italic */
+  .subtitle-italic {
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(245,240,232,.5);
+    margin-top: 0.6rem;
+    letter-spacing: .04em;
+    opacity: 0;
+    animation: fadeUp .9s ease 1.9s forwards;
+  }
+ 
+  /* Divider ornament */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.4rem 0;
+    opacity: 0;
+    animation: fadeUp .9s ease 2.2s forwards;
+  }
+  .ornament-line {
+    width: 60px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .ornament-line:last-child {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .ornament-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.6); opacity: .6; }
+  }
+ 
+  /* Meaning tagline */
+  .meaning {
+    font-size: clamp(.85rem, 1.8vw, 1.05rem);
+    font-weight: 300;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,.38);
+    opacity: 0;
+    animation: fadeUp .9s ease 2.5s forwards;
+    text-align: center;
+  }
+  .meaning em {
+    font-style: italic;
+    color: rgba(200,169,110,.6);
+    letter-spacing: .04em;
+    text-transform: none;
+  }
+ 
+  /* Construction message */
+  .construction {
+    margin-top: 3.5rem;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp .9s ease 3s forwards;
+  }
+  .construction-label {
+    font-family: 'Cinzel', serif;
+    font-size: .58rem;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: .9rem;
+  }
+  .construction-text {
+    font-size: clamp(.9rem, 1.5vw, 1.1rem);
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(245,240,232,.4);
+    max-width: 380px;
+    line-height: 1.8;
+  }
+ 
+  /* Progress dots */
+  .progress-dots {
+    display: flex;
+    gap: .6rem;
+    justify-content: center;
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeUp .9s ease 3.4s forwards;
+  }
+  .pdot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(200,169,110,.25);
+  }
+  .pdot.active {
+    background: var(--gold);
+    animation: dotGlow 2s ease-in-out infinite;
+  }
+  @keyframes dotGlow {
+    0%,100% { box-shadow: 0 0 6px var(--gold); }
+    50%      { box-shadow: 0 0 18px var(--gold), 0 0 30px rgba(200,169,110,.4); }
+  }
+ 
+  /* Corner decorations */
+  .corner {
+    position: fixed;
+    width: 60px; height: 60px;
+    opacity: 0;
+    animation: cornerFade 1.5s ease 3.5s forwards;
+  }
+  .corner::before, .corner::after {
+    content: '';
+    position: absolute;
+    background: var(--gold);
+    opacity: .4;
+  }
+  .corner::before { width: 1px; height: 40px; }
+  .corner::after  { width: 40px; height: 1px; }
+  .corner-tl { top: 32px; left: 32px; }
+  .corner-tl::before { top: 0; left: 0; }
+  .corner-tl::after  { top: 0; left: 0; }
+  .corner-tr { top: 32px; right: 32px; }
+  .corner-tr::before { top: 0; right: 0; }
+  .corner-tr::after  { top: 0; right: 0; }
+  .corner-bl { bottom: 32px; left: 32px; }
+  .corner-bl::before { bottom: 0; left: 0; }
+  .corner-bl::after  { bottom: 0; left: 0; }
+  .corner-br { bottom: 32px; right: 32px; }
+  .corner-br::before { bottom: 0; right: 0; }
+  .corner-br::after  { bottom: 0; right: 0; }
+  @keyframes cornerFade { to { opacity: 1; } }
+ 
+  /* Brand signature */
+  .brand {
+    position: fixed;
+    bottom: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeUp 1.2s ease 4s forwards;
+    white-space: nowrap;
+  }
+  .brand-by {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: .58rem;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: rgba(200,169,110,.35);
+    display: block;
+    margin-bottom: .35rem;
+  }
+  .brand-name {
+    font-family: 'Cinzel', serif;
+    font-size: .82rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: rgba(200,169,110,.55);
+    display: block;
+    transition: color .4s, letter-spacing .4s;
+  }
+  .brand:hover .brand-name {
+    color: var(--gold);
+    letter-spacing: .38em;
+  }
+  .brand-name .c-letter {
+    font-size: 1rem;
+    color: rgba(200,169,110,.7);
+  }
+  .brand-meaning {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: .6rem;
+    font-style: italic;
+    letter-spacing: .22em;
+    color: rgba(200,169,110,.25);
+    display: block;
+    margin-top: .3rem;
+    transition: color .4s;
+  }
+  .brand:hover .brand-meaning {
+    color: rgba(200,169,110,.5);
+  }
+ 
+  /* Cursor glow */
+  .cursor-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,.07) 0%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    transition: opacity .3s;
+  }
+ 
+  /* Utility */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  /* Note: Google Fonts fallback for offline */
+  @font-face {
+    font-family: 'Cinzel';
+    font-style: normal;
+    src: local('Georgia'), local('Times New Roman');
+  }
+</style>
+</head>
+<body>
+ 
+<!-- Grain canvas -->
+<canvas id="grain"></canvas>
+ 
+<!-- Ambient layers -->
+<div class="aurora"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+ 
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+ 
+<!-- Sound wave bars -->
+<div class="waves-wrap" id="waves"></div>
+ 
+<!-- Corner deco -->
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+ 
+<!-- Brand signature -->
+<div class="brand">
+  <span class="brand-by">une création</span>
+  <span class="brand-name"><span class="c-letter">C</span>ephalosophie</span>
+  <span class="brand-meaning">sagesse du cerveau</span>
+</div>
+ 
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+ 
+<!-- Main -->
+<div class="scene">
+  <div class="rule"></div>
+ 
+  <p class="eyebrow">— agis. maintenant. simplement. —</p>
+ 
+  <div class="title-wrap">
+    <h1 class="title-main">
+      <span class="gold-letter">K</span>anto&nbsp;<span class="gold-letter">A</span>plo
+    </h1>
+    <p class="subtitle-italic">Fais-le Simplement</p>
+  </div>
+ 
+  <div class="ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-dot"></div>
+    <div class="ornament-line"></div>
+  </div>
+ 
+  <p class="meaning">
+    <em>kanto</em> — fais-le &nbsp;·&nbsp; <em>aplo</em> — simplement &nbsp;·&nbsp; <span style="opacity:.5">tok pisin</span>
+  </p>
+ 
+  <div class="construction">
+    <p class="construction-label">En composition</p>
+    <p class="construction-text">
+      Quelque chose de beau prend forme dans l'ombre.<br>
+      Revenez bientôt écouter.
+    </p>
+  </div>
+ 
+  <div class="progress-dots">
+    <div class="pdot active"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+    <div class="pdot"></div>
+  </div>
+</div>
+ 
+<script>
+// ── Grain noise ──────────────────────────────────────────────
+(function() {
+  const canvas = document.getElementById('grain');
+  const ctx = canvas.getContext('2d');
+  let frame = 0;
+ 
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+ 
+  function renderGrain() {
+    const w = canvas.width, h = canvas.height;
+    const img = ctx.createImageData(w, h);
+    const data = img.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const v = (Math.random() * 255) | 0;
+      data[i] = data[i+1] = data[i+2] = v;
+      data[i+3] = 18;
+    }
+    ctx.putImageData(img, 0, 0);
+    frame++;
+    if (frame % 2 === 0) requestAnimationFrame(renderGrain);
+    else requestAnimationFrame(renderGrain);
+  }
+  renderGrain();
+})();
+ 
+// ── Stars ────────────────────────────────────────────────────
+(function() {
+  const container = document.getElementById('stars');
+  const COUNT = 80;
+  for (let i = 0; i < COUNT; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `
+      left: ${Math.random()*100}%;
+      top:  ${Math.random()*100}%;
+      animation-duration: ${2 + Math.random()*4}s;
+      animation-delay:    ${Math.random()*6}s;
+      width:  ${Math.random() > .92 ? '2px' : '1px'};
+      height: ${Math.random() > .92 ? '2px' : '1px'};
+      opacity: 0;
+    `;
+    container.appendChild(s);
+  }
+})();
+ 
+// ── Sound waves ──────────────────────────────────────────────
+(function() {
+  const wrap = document.getElementById('waves');
+  const BAR_COUNT = Math.floor(window.innerWidth / 5);
+  for (let i = 0; i < BAR_COUNT; i++) {
+    const b = document.createElement('div');
+    b.className = 'bar';
+    const minH = 8  + Math.random() * 30;
+    const maxH = 40 + Math.random() * 100;
+    const dur  = 0.6 + Math.random() * 1.8;
+    const delay = Math.random() * 2;
+    b.style.cssText = `
+      height: ${maxH}px;
+      --min: ${minH/maxH};
+      --max: 1;
+      animation-duration: ${dur}s;
+      animation-delay: ${delay}s;
+    `;
+    wrap.appendChild(b);
+  }
+})();
+ 
+// ── Cursor glow ──────────────────────────────────────────────
+(function() {
+  const glow = document.getElementById('cursorGlow');
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  let cx = mx, cy = my;
+ 
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+ 
+  function loop() {
+    cx += (mx - cx) * .07;
+    cy += (my - cy) * .07;
+    glow.style.left = cx + 'px';
+    glow.style.top  = cy + 'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+ 
+// ── Parallax title on mouse ──────────────────────────────────
+(function() {
+  const title = document.querySelector('.title-main');
+  document.addEventListener('mousemove', e => {
+    const rx = (e.clientX / window.innerWidth  - .5) * 12;
+    const ry = (e.clientY / window.innerHeight - .5) * 8;
+    title.style.transform = `perspective(800px) rotateY(${rx}deg) rotateX(${-ry}deg) translateY(0)`;
+  });
+})();
+ 
+// ── Animated progress dot cycling ───────────────────────────
+(function() {
+  const dots = document.querySelectorAll('.pdot');
+  let active = 0;
+  setInterval(() => {
+    dots[active].classList.remove('active');
+    active = (active + 1) % dots.length;
+    dots[active].classList.add('active');
+  }, 1200);
+})();
+ 
+// ── Responsive waves rebuild ─────────────────────────────────
+window.addEventListener('resize', () => {
+  const wrap = document.getElementById('waves');
+  wrap.innerHTML = '';
+  const BAR_COUNT = Math.floor(window.innerWidth / 5);
+  for (let i = 0; i < BAR_COUNT; i++) {
+    const b = document.createElement('div');
+    b.className = 'bar';
+    const maxH = 40 + Math.random() * 100;
+    const minH = 8  + Math.random() * 30;
+    b.style.cssText = `
+      height: ${maxH}px;
+      --min: ${minH/maxH};
+      --max: 1;
+      animation-duration: ${0.6 + Math.random()*1.8}s;
+      animation-delay: ${Math.random()*2}s;
+    `;
+    wrap.appendChild(b);
+  }
+});
+</script>
+</body>
+</html>
+ 
