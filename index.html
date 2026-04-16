@@ -3,610 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kanto Aplo — Bientôt</title>
+<title>KANTO APLO · ΚΆΝΤΟ ΑΠΛΌ · En Composition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap');
- 
-  :root {
-    --ink: #0d0a07;
-    --cream: #f5f0e8;
-    --gold: #c8a96e;
-    --gold-light: #e8d5a3;
-    --sienna: #8b4a2f;
-    --mist: rgba(200, 169, 110, 0.08);
-  }
- 
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
- 
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    color: var(--cream);
-  }
- 
-  /* ── Canvas grain overlay ── */
-  #grain {
-    position: fixed; inset: 0;
-    pointer-events: none;
-    z-index: 100;
-    opacity: .45;
-  }
- 
-  /* ── Background aurora ── */
-  .aurora {
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(139,74,47,.35) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(200,169,110,.18) 0%, transparent 55%),
-      radial-gradient(ellipse 100% 100% at 50% 50%, rgba(13,10,7,1) 40%, transparent 100%);
-    animation: auroraShift 14s ease-in-out infinite alternate;
-  }
-  @keyframes auroraShift {
-    0%   { filter: hue-rotate(0deg) brightness(1); }
-    50%  { filter: hue-rotate(8deg) brightness(1.08); }
-    100% { filter: hue-rotate(-5deg) brightness(.95); }
-  }
- 
-  /* ── Floating orbs ── */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(90px);
-    pointer-events: none;
-    animation: orbDrift linear infinite;
-  }
-  .orb-1 {
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(200,169,110,.12), transparent 70%);
-    top: -100px; left: -100px;
-    animation-duration: 22s;
-  }
-  .orb-2 {
-    width: 380px; height: 380px;
-    background: radial-gradient(circle, rgba(139,74,47,.18), transparent 70%);
-    bottom: -80px; right: -80px;
-    animation-duration: 18s;
-    animation-direction: reverse;
-  }
-  .orb-3 {
-    width: 250px; height: 250px;
-    background: radial-gradient(circle, rgba(200,169,110,.1), transparent 70%);
-    top: 40%; left: 60%;
-    animation-duration: 30s;
-  }
-  @keyframes orbDrift {
-    0%   { transform: translate(0,0) scale(1); }
-    33%  { transform: translate(40px, -30px) scale(1.05); }
-    66%  { transform: translate(-20px, 50px) scale(.95); }
-    100% { transform: translate(0,0) scale(1); }
-  }
- 
-  /* ── Sound waves ── */
-  .waves-wrap {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 180px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 3px;
-    padding-bottom: 24px;
-    pointer-events: none;
-  }
-  .bar {
-    width: 2px;
-    background: linear-gradient(to top, var(--gold), transparent);
-    border-radius: 2px;
-    animation: wavePulse ease-in-out infinite alternate;
-    opacity: .55;
-    transform-origin: bottom;
-  }
-  @keyframes wavePulse {
-    0%   { transform: scaleY(var(--min)); }
-    100% { transform: scaleY(var(--max)); }
-  }
- 
-  /* ── Stars ── */
-  .stars {
-    position: fixed; inset: 0;
-    pointer-events: none;
-  }
-  .star {
-    position: absolute;
-    width: 1px; height: 1px;
-    background: var(--gold-light);
-    border-radius: 50%;
-    animation: starTwinkle ease-in-out infinite alternate;
-  }
-  @keyframes starTwinkle {
-    0%   { opacity: .1; transform: scale(1); }
-    100% { opacity: .8; transform: scale(1.8); }
-  }
- 
-  /* ── Main content ── */
-  .scene {
-    position: fixed; inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
- 
-  /* Decorative rule */
-  .rule {
-    width: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 0 auto 3rem;
-    animation: ruleExpand 2.2s cubic-bezier(.16,1,.3,1) 0.4s forwards;
-  }
-  @keyframes ruleExpand {
-    to { width: 200px; }
-  }
- 
-  /* Eyebrow */
-  .eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: .62rem;
-    letter-spacing: .35em;
-    text-transform: uppercase;
-    color: var(--gold);
-    opacity: 0;
-    transform: translateY(16px);
-    animation: fadeUp .9s ease 1s forwards;
-    margin-bottom: 1.4rem;
-  }
- 
-  /* Main title */
-  .title-wrap {
-    position: relative;
-    text-align: center;
-    overflow: hidden;
-  }
-  .title-main {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(3.5rem, 9vw, 7.5rem);
-    font-weight: 600;
-    letter-spacing: .06em;
-    line-height: 1;
-    color: var(--cream);
-    opacity: 0;
-    transform: translateY(40px);
-    animation: fadeUp 1.2s cubic-bezier(.16,1,.3,1) 1.2s forwards;
-    position: relative;
-  }
-  .title-main .gold-letter {
-    color: var(--gold);
-    display: inline-block;
-    animation: goldPulse 4s ease-in-out infinite;
-  }
-  @keyframes goldPulse {
-    0%,100% { text-shadow: 0 0 30px rgba(200,169,110,.4); }
-    50%      { text-shadow: 0 0 60px rgba(200,169,110,.8), 0 0 120px rgba(200,169,110,.3); }
-  }
- 
-  /* Subtitle italic */
-  .subtitle-italic {
-    font-size: clamp(1rem, 2.5vw, 1.6rem);
-    font-style: italic;
-    font-weight: 300;
-    color: rgba(245,240,232,.5);
-    margin-top: 0.6rem;
-    letter-spacing: .04em;
-    opacity: 0;
-    animation: fadeUp .9s ease 1.9s forwards;
-  }
- 
-  /* Divider ornament */
-  .ornament {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2.4rem 0;
-    opacity: 0;
-    animation: fadeUp .9s ease 2.2s forwards;
-  }
-  .ornament-line {
-    width: 60px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold));
-  }
-  .ornament-line:last-child {
-    background: linear-gradient(90deg, var(--gold), transparent);
-  }
-  .ornament-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 12px var(--gold);
-    animation: dotPulse 2s ease-in-out infinite;
-  }
-  @keyframes dotPulse {
-    0%,100% { transform: scale(1); opacity: 1; }
-    50%      { transform: scale(1.6); opacity: .6; }
-  }
- 
-  /* Meaning tagline */
-  .meaning {
-    font-size: clamp(.85rem, 1.8vw, 1.05rem);
-    font-weight: 300;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: rgba(245,240,232,.38);
-    opacity: 0;
-    animation: fadeUp .9s ease 2.5s forwards;
-    text-align: center;
-  }
-  .meaning em {
-    font-style: italic;
-    color: rgba(200,169,110,.6);
-    letter-spacing: .04em;
-    text-transform: none;
-  }
- 
-  /* Construction message */
-  .construction {
-    margin-top: 3.5rem;
-    text-align: center;
-    opacity: 0;
-    animation: fadeUp .9s ease 3s forwards;
-  }
-  .construction-label {
-    font-family: 'Cinzel', serif;
-    font-size: .58rem;
-    letter-spacing: .4em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: .9rem;
-  }
-  .construction-text {
-    font-size: clamp(.9rem, 1.5vw, 1.1rem);
-    font-style: italic;
-    font-weight: 300;
-    color: rgba(245,240,232,.4);
-    max-width: 380px;
-    line-height: 1.8;
-  }
- 
-  /* Progress dots */
-  .progress-dots {
-    display: flex;
-    gap: .6rem;
-    justify-content: center;
-    margin-top: 2rem;
-    opacity: 0;
-    animation: fadeUp .9s ease 3.4s forwards;
-  }
-  .pdot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: rgba(200,169,110,.25);
-  }
-  .pdot.active {
-    background: var(--gold);
-    animation: dotGlow 2s ease-in-out infinite;
-  }
-  @keyframes dotGlow {
-    0%,100% { box-shadow: 0 0 6px var(--gold); }
-    50%      { box-shadow: 0 0 18px var(--gold), 0 0 30px rgba(200,169,110,.4); }
-  }
- 
-  /* Corner decorations */
-  .corner {
-    position: fixed;
-    width: 60px; height: 60px;
-    opacity: 0;
-    animation: cornerFade 1.5s ease 3.5s forwards;
-  }
-  .corner::before, .corner::after {
-    content: '';
-    position: absolute;
-    background: var(--gold);
-    opacity: .4;
-  }
-  .corner::before { width: 1px; height: 40px; }
-  .corner::after  { width: 40px; height: 1px; }
-  .corner-tl { top: 32px; left: 32px; }
-  .corner-tl::before { top: 0; left: 0; }
-  .corner-tl::after  { top: 0; left: 0; }
-  .corner-tr { top: 32px; right: 32px; }
-  .corner-tr::before { top: 0; right: 0; }
-  .corner-tr::after  { top: 0; right: 0; }
-  .corner-bl { bottom: 32px; left: 32px; }
-  .corner-bl::before { bottom: 0; left: 0; }
-  .corner-bl::after  { bottom: 0; left: 0; }
-  .corner-br { bottom: 32px; right: 32px; }
-  .corner-br::before { bottom: 0; right: 0; }
-  .corner-br::after  { bottom: 0; right: 0; }
-  @keyframes cornerFade { to { opacity: 1; } }
- 
-  /* Brand signature */
-  .brand {
-    position: fixed;
-    bottom: 38px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    z-index: 20;
-    opacity: 0;
-    animation: fadeUp 1.2s ease 4s forwards;
-    white-space: nowrap;
-  }
-  .brand-by {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: .58rem;
-    letter-spacing: .35em;
-    text-transform: uppercase;
-    color: rgba(200,169,110,.35);
-    display: block;
-    margin-bottom: .35rem;
-  }
-  .brand-name {
-    font-family: 'Cinzel', serif;
-    font-size: .82rem;
-    letter-spacing: .28em;
-    text-transform: uppercase;
-    color: rgba(200,169,110,.55);
-    display: block;
-    transition: color .4s, letter-spacing .4s;
-  }
-  .brand:hover .brand-name {
-    color: var(--gold);
-    letter-spacing: .38em;
-  }
-  .brand-name .c-letter {
-    font-size: 3rem;
-    color: rgba(200,169,110,.7);
-  }
-  .brand-meaning {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: .6rem;
-    font-style: italic;
-    letter-spacing: .22em;
-    color: rgba(200,169,110,.25);
-    display: block;
-    margin-top: .3rem;
-    transition: color .4s;
-  }
-  .brand:hover .brand-meaning {
-    color: rgba(200,169,110,.5);
-  }
- 
-  /* Cursor glow */
-  .cursor-glow {
-    position: fixed;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(200,169,110,.07) 0%, transparent 70%);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    z-index: 50;
-    transition: opacity .3s;
-  }
- 
-  /* Utility */
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
- 
-  /* Note: Google Fonts fallback for offline */
-  @font-face {
-    font-family: 'Cinzel';
-    font-style: normal;
-    src: local('Georgia'), local('Times New Roman');
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#05040A;
+  --gold:#C9963A;--goldl:#E8C060;--goldd:rgba(201,150,58,.12);
+  --text:#EDE7DB;--textm:#8C867E;--textd:#3A3530;
+  --tekton:#C9963A;--logos:#3D8EE8;--mantis:#8B5CF6;
+  --hermes:#E8714A;--synergos:#2DD4A0;--kairos:#F472B6;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cormorant Garamond',serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor{position:fixed;width:12px;height:12px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .12s ease,opacity .2s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,150,58,.5);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .22s ease}
+
+/* ── GRAIN ── */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.03;pointer-events:none;z-index:9000;animation:grainshift 1.8s steps(2) infinite}
+
+/* ── STAFF BACKGROUND — musical lines ── */
+.staff-bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.staff-line{position:absolute;left:0;right:0;height:1px;background:rgba(201,150,58,.055)}
+
+/* ── FLOATING NOTES ── */
+.notes-layer{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.mnote{position:absolute;font-size:var(--fs,22px);color:var(--c,rgba(201,150,58,.18));animation:floatnote var(--dur,12s) ease-in-out infinite var(--del,0s);user-select:none;line-height:1}
+
+/* ── WAVEFORM CANVAS ── */
+#waveCanvas{position:fixed;bottom:0;left:0;right:0;width:100%;height:120px;z-index:2;pointer-events:none;opacity:.55}
+
+/* ── MAIN ── */
+main{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px 180px;text-align:center}
+
+/* ── TOP BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,150,58,.28);border-radius:30px;padding:8px 22px;margin-bottom:52px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:0;animation:rise .9s ease forwards .4s}
+.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulsedot 1.8s ease-in-out infinite}
+.badge-dot.red{background:#E87474;box-shadow:0 0 8px #E87474}
+
+/* ── GREEK WATERMARK ── */
+.greek-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);font-family:'Cinzel',serif;font-size:clamp(180px,30vw,420px);font-weight:900;color:rgba(201,150,58,.028);pointer-events:none;user-select:none;letter-spacing:-20px;line-height:1;white-space:nowrap}
+
+/* ── TITLE ── */
+.title-block{margin-bottom:32px;opacity:0;animation:rise .9s ease forwards .7s;position:relative}
+.main-title{font-family:'Cinzel',serif;font-size:clamp(38px,7vw,96px);font-weight:900;line-height:1.02;letter-spacing:-2px;display:block;background:linear-gradient(125deg,#F5EFE3 0%,#E8C060 35%,#C9963A 50%,#F5EFE3 100%);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 5s ease-in-out infinite 2s}
+.greek-title{display:block;font-family:'Cinzel',serif;font-size:clamp(13px,2vw,22px);color:var(--textd);letter-spacing:12px;font-weight:400;margin-top:12px;-webkit-text-fill-color:var(--textd)}
+
+/* ── DIVIDER ORNAMENT ── */
+.ornament{margin:32px auto;display:flex;align-items:center;gap:18px;opacity:0;animation:rise .8s ease forwards 1s}
+.orn-line{flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.orn-sym{font-size:18px;color:var(--gold)}
+
+/* ── COMPOSITION TEXT ── */
+.composition-text{max-width:620px;margin:0 auto 52px;opacity:0;animation:rise .9s ease forwards 1.2s}
+.comp-main{font-size:clamp(18px,2.5vw,26px);font-weight:300;color:var(--text);line-height:1.65;margin-bottom:16px}
+.comp-sub{font-size:clamp(14px,1.6vw,17px);font-style:italic;color:var(--textm);line-height:1.75}
+
+/* ── PROGRESS / NOTES EN COURS ── */
+.progress-block{margin:0 auto 60px;max-width:680px;opacity:0;animation:rise .9s ease forwards 1.5s}
+
+.prog-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+
+.measures{display:flex;gap:5px;justify-content:center;align-items:flex-end;height:52px;margin-bottom:22px}
+.measure{width:8px;border-radius:3px 3px 0 0;background:var(--c,rgba(201,150,58,.3));animation:measure var(--dur,1.2s) ease-in-out infinite var(--del,0s) alternate}
+
+.movements{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+.mvt{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;text-align:left;transition:all .3s;position:relative;overflow:hidden}
+.mvt::before{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--mc,#C9963A),transparent);opacity:.7}
+.mvt-num{font-family:'Cinzel',serif;font-size:11px;color:var(--mc,#C9963A);letter-spacing:2px;margin-bottom:6px;font-weight:600}
+.mvt-name{font-size:14px;font-weight:600;color:var(--text);font-family:'Cinzel',serif;letter-spacing:.5px;margin-bottom:3px}
+.mvt-desc{font-size:11.5px;font-style:italic;color:var(--textm)}
+.mvt-status{margin-top:8px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase}
+.mvt-done{color:#4DC478}.mvt-wip{color:var(--gold)}.mvt-soon{color:var(--textd)}
+
+/* ── SEPARATOR SCORE LINE ── */
+.score-line{width:100%;max-width:700px;margin:0 auto 56px;opacity:0;animation:rise .8s ease forwards 1.8s;position:relative}
+.score-staff{position:relative;height:48px}
+.score-staff-line{position:absolute;left:0;right:0;height:1px;background:rgba(201,150,58,.12)}
+.score-note{position:absolute;font-size:20px;color:rgba(201,150,58,.5);animation:notebounce var(--nd,2s) ease-in-out infinite var(--ndel,0s)}
+.score-clef{font-size:30px;color:rgba(201,150,58,.3);position:absolute;left:0;top:-8px}
+.score-text{text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--textd);margin-top:10px}
+
+/* ── CTA DEMO ── */
+.cta-block{opacity:0;animation:rise .9s ease forwards 2.1s;display:flex;flex-direction:column;align-items:center;gap:20px}
+
+.cta-label{font-size:13px;font-style:italic;color:var(--textm);margin-bottom:4px}
+
+.cta-btn{display:inline-flex;align-items:center;gap:14px;text-decoration:none;padding:18px 40px;border-radius:50px;position:relative;overflow:hidden;transition:all .35s ease;group:true}
+.cta-btn-inner{position:absolute;inset:0;border-radius:50px;border:1.5px solid var(--gold);background:linear-gradient(135deg,rgba(201,150,58,.1),rgba(201,150,58,.05));z-index:0}
+.cta-btn:hover .cta-btn-inner{background:linear-gradient(135deg,rgba(201,150,58,.22),rgba(201,150,58,.12));border-color:var(--goldl)}
+.cta-btn-glow{position:absolute;inset:-2px;border-radius:52px;background:transparent;box-shadow:0 0 0px var(--gold);transition:box-shadow .35s;z-index:0}
+.cta-btn:hover .cta-btn-glow{box-shadow:0 0 40px rgba(201,150,58,.3),0 0 80px rgba(201,150,58,.12)}
+.cta-btn-content{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
+.cta-play{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold);flex-shrink:0;transition:all .3s}
+.cta-btn:hover .cta-play{background:var(--gold);color:var(--bg)}
+.cta-text-main{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);letter-spacing:1.5px;display:block}
+.cta-text-sub{font-size:12px;font-style:italic;color:var(--textm);display:block;margin-top:2px;letter-spacing:.5px}
+.cta-arrow{font-size:18px;color:var(--gold);transition:transform .3s}
+.cta-btn:hover .cta-arrow{transform:translateX(5px)}
+
+.cta-editors{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.ced{width:9px;height:9px;border-radius:50%;opacity:.7;transition:all .3s}
+.ced:hover{transform:scale(1.6);opacity:1}
+
+/* ── COMPANY FOOTER ── */
+.page-footer{position:fixed;bottom:0;left:0;right:0;z-index:20;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(0deg,rgba(5,4,10,.95) 0%,transparent 100%)}
+.pf-brand{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:2.5px;text-decoration:none}
+.pf-link{font-size:10.5px;color:var(--textd);text-decoration:none;letter-spacing:1.5px;font-family:'DM Mono',monospace;transition:color .2s}
+.pf-link:hover{color:var(--textm)}
+
+/* ── KEYFRAMES ── */
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes pulsedot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+@keyframes grainshift{0%{transform:translate(0,0)}25%{transform:translate(-2%,-1%)}50%{transform:translate(1%,2%)}75%{transform:translate(-1%,1%)}100%{transform:translate(0,0)}}
+@keyframes floatnote{0%{opacity:0;transform:translateY(0) rotate(var(--rot,0deg))}15%{opacity:1}85%{opacity:.6}100%{opacity:0;transform:translateY(var(--dy,-180px)) translateX(var(--dx,30px)) rotate(var(--rot2,10deg))}}
+@keyframes measure{from{height:var(--hmin,8px)}to{height:var(--hmax,42px)}}
+@keyframes notebounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes staffpulse{0%,100%{opacity:.055}50%{opacity:.1}}
+
+@media(max-width:640px){.movements{grid-template-columns:1fr 1fr}.page-footer{padding:14px 22px}.cta-btn{padding:15px 28px}}
+@media(max-width:420px){.movements{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
- 
-<!-- Grain canvas -->
-<canvas id="grain"></canvas>
- 
-<!-- Ambient layers -->
-<div class="aurora"></div>
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
- 
-<!-- Stars -->
-<div class="stars" id="stars"></div>
- 
-<!-- Sound wave bars -->
-<div class="waves-wrap" id="waves"></div>
- 
-<!-- Corner deco -->
-<div class="corner corner-tl"></div>
-<div class="corner corner-tr"></div>
-<div class="corner corner-bl"></div>
-<div class="corner corner-br"></div>
- 
-<!-- Brand signature -->
-<div class="brand">
-  <span class="brand-by">une création</span>
-  <span class="brand-name"><span class="c-letter">C</span>
-    <a href="https://cephalosophie.com" style="text-decoration: none; color: inherit;">ephalosophie</a>
-  </span>
-  <span class="brand-meaning">sagesse du cerveau</span>
-</div>
- 
-<!-- Cursor glow -->
-<div class="cursor-glow" id="cursorGlow"></div>
- 
-<!-- Main -->
-<div class="scene">
-  <div class="rule"></div>
- 
-  <p class="eyebrow">— agis. maintenant. simplement. —</p>
- 
-  <div class="title-wrap">
-    <h1 class="title-main">
-      <span class="gold-letter">K</span>anto&nbsp;<span class="gold-letter">A</span>plo
-    </h1>
-    <p class="subtitle-italic">Fais-le Simplement</p>
+
+<!-- Custom cursor -->
+<div class="cursor" id="CUR"></div>
+<div class="cursor-ring" id="CURR"></div>
+
+<!-- Musical staff background -->
+<div class="staff-bg" id="STAFF"></div>
+
+<!-- Floating notes layer -->
+<div class="notes-layer" id="NOTES"></div>
+
+<!-- Waveform canvas -->
+<canvas id="waveCanvas"></canvas>
+
+<!-- ═══════════════════════════════════════ -->
+<main>
+
+  <!-- Greek watermark -->
+  <div class="greek-watermark">ΚΆΝΤΟ</div>
+
+  <!-- Badge -->
+  <div class="badge">
+    <div class="badge-dot red"></div>
+    En Composition · Studio Ouvert
   </div>
- 
+
+  <!-- Title -->
+  <div class="title-block">
+    <span class="main-title">KANTO APLO</span>
+    <span class="greek-title">ΚΆΝΤΟ ΑΠΛΌ</span>
+  </div>
+
+  <!-- Ornament -->
   <div class="ornament">
-    <div class="ornament-line"></div>
-    <div class="ornament-dot"></div>
-    <div class="ornament-line"></div>
+    <div class="orn-line"></div>
+    <span class="orn-sym">♩</span>
+    <div class="orn-line" style="background:linear-gradient(90deg,var(--gold),transparent)"></div>
   </div>
- 
-  <p class="meaning">
-    <em>kanto</em> — fais-le &nbsp;·&nbsp; <em>aplo</em> — simplement &nbsp;·&nbsp; <span style="opacity:.5">tok pisin</span>
-  </p>
- 
-  <div class="construction">
-    <p class="construction-label">En composition</p>
-    <p class="construction-text">
-      Quelque chose de beau prend forme dans l'ombre.<br>
-      Revenez bientôt écouter.
+
+  <!-- Composition text -->
+  <div class="composition-text">
+    <p class="comp-main">La partition est en cours d'écriture.<br>Les premières mesures sont posées.</p>
+    <p class="comp-sub">
+      « La plus belle musique ne naît pas de celui qui règle les câbles —<br>
+      elle naît de celui qui ferme les yeux et joue.<br>
+      <strong style="color:var(--text);font-style:normal">ΚΆΝΤΟ ΑΠΛΌ</strong>, c'est tout ce qui est entre les deux. »
     </p>
   </div>
- 
-  <div class="progress-dots">
-    <div class="pdot active"></div>
-    <div class="pdot"></div>
-    <div class="pdot"></div>
-    <div class="pdot"></div>
-    <div class="pdot"></div>
+
+  <!-- Progress -->
+  <div class="progress-block">
+    <div class="prog-title">♩ Mesures enregistrées</div>
+
+    <!-- Animated equalizer bars -->
+    <div class="measures" id="MEASURES"></div>
+
+    <!-- Movements -->
+    <div class="movements">
+      <div class="mvt" style="--mc:#C9963A">
+        <div class="mvt-num">MOUVEMENT I</div>
+        <div class="mvt-name">ΤΈΚΤΩΝ · ΛΌΓΟΣ</div>
+        <div class="mvt-desc">Pages & APIs — les fondations</div>
+        <div class="mvt-status mvt-wip">⟳ En cours</div>
+      </div>
+      <div class="mvt" style="--mc:#E8714A">
+        <div class="mvt-num">MOUVEMENT II</div>
+        <div class="mvt-name">ἙΡΜΗ͂Σ · ΣΥΝΕΡΓΟΣ</div>
+        <div class="mvt-desc">Workflows & Connecteurs</div>
+        <div class="mvt-status mvt-wip">⟳ En cours</div>
+      </div>
+      <div class="mvt" style="--mc:#8B5CF6">
+        <div class="mvt-num">MOUVEMENT III</div>
+        <div class="mvt-name">ΜΆΝΤΙΣ · ΚΑΙΡΟΣ</div>
+        <div class="mvt-desc">Intelligence & Expérimentation</div>
+        <div class="mvt-status mvt-soon">◌ À venir</div>
+      </div>
+    </div>
   </div>
-</div>
- 
+
+  <!-- Score divider -->
+  <div class="score-line">
+    <div class="score-staff">
+      <div class="score-staff-line" style="top:20%"></div>
+      <div class="score-staff-line" style="top:37%"></div>
+      <div class="score-staff-line" style="top:54%"></div>
+      <div class="score-staff-line" style="top:71%"></div>
+      <div class="score-staff-line" style="top:88%"></div>
+      <span class="score-clef">𝄞</span>
+      <span class="score-note" style="left:12%;top:22%;--nd:2.1s;--ndel:.0s">𝅗𝅥</span>
+      <span class="score-note" style="left:22%;top:42%;--nd:2.8s;--ndel:.3s">♩</span>
+      <span class="score-note" style="left:33%;top:18%;--nd:2.4s;--ndel:.7s">𝅘𝅥𝅮</span>
+      <span class="score-note" style="left:44%;top:50%;--nd:1.9s;--ndel:1.1s">♩</span>
+      <span class="score-note" style="left:56%;top:28%;--nd:3.1s;--ndel:.5s">♪</span>
+      <span class="score-note" style="left:67%;top:44%;--nd:2.2s;--ndel:1.4s">𝅗𝅥</span>
+      <span class="score-note" style="left:78%;top:16%;--nd:2.6s;--ndel:.2s">♩</span>
+      <span class="score-note" style="left:88%;top:38%;--nd:2.0s;--ndel:.9s">𝅘𝅥𝅮</span>
+    </div>
+    <div class="score-text">Partition en cours · Studio Cephalo Sophie · 2026</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <p class="cta-label">Curieux d'entendre la première répétition ?</p>
+
+    <a href="https://editors.kantoaplo.com" class="cta-btn">
+      <div class="cta-btn-inner"></div>
+      <div class="cta-btn-glow"></div>
+      <div class="cta-btn-content">
+        <div class="cta-play">▶</div>
+        <div>
+          <span class="cta-text-main">Écouter la Démo</span>
+          <span class="cta-text-sub">Découvrir les éditeurs en avant-première</span>
+        </div>
+        <span class="cta-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Editor color dots -->
+    <div class="cta-editors">
+      <div class="ced" style="background:#C9963A" title="ΤΈΚΤΩΝ — Page Builder"></div>
+      <div class="ced" style="background:#3D8EE8" title="ΛΌΓΟΣ — API Builder"></div>
+      <div class="ced" style="background:#8B5CF6" title="ΜΆΝΤΙΣ — BI & ML"></div>
+      <div class="ced" style="background:#E8714A" title="ἙΡΜΗ͂Σ — Workflows"></div>
+      <div class="ced" style="background:#2DD4A0" title="ΣΥΝΕΡΓΟΣ — Connecteurs"></div>
+      <div class="ced" style="background:#F472B6" title="ΚΑΙΡΟΣ — A/B Testing"></div>
+    </div>
+    <p style="font-size:11px;font-style:italic;color:var(--textd);font-family:'DM Mono',monospace;letter-spacing:1px">6 éditeurs · interfaces vivantes · editors.kantoaplo.com</p>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <a href="https://cephalosophie.com" target="_blank" class="pf-brand">ΚΕΦΑΛΗ ΣΟΦΙΑ · Cephalo Sophie</a>
+  <a href="https://editors.kantoaplo.com" class="pf-link">editors.kantoaplo.com ↗</a>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
 <script>
-// ── Grain noise ──────────────────────────────────────────────
-(function() {
-  const canvas = document.getElementById('grain');
-  const ctx = canvas.getContext('2d');
-  let frame = 0;
- 
-  function resize() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
- 
-  function renderGrain() {
-    const w = canvas.width, h = canvas.height;
-    const img = ctx.createImageData(w, h);
-    const data = img.data;
-    for (let i = 0; i < data.length; i += 4) {
-      const v = (Math.random() * 255) | 0;
-      data[i] = data[i+1] = data[i+2] = v;
-      data[i+3] = 18;
+/* ── CURSOR ── */
+const cur=document.getElementById('CUR'), curr=document.getElementById('CURR');
+let mx=window.innerWidth/2, my=window.innerHeight/2;
+let rx=mx, ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function ring(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;curr.style.left=rx+'px';curr.style.top=ry+'px';requestAnimationFrame(ring)})();
+
+/* ── STAFF LINES ── */
+const staff=document.getElementById('STAFF');
+for(let i=0;i<22;i++){const l=document.createElement('div');l.className='staff-line';l.style.top=(i/22*100)+'%';l.style.animation=`staffpulse ${2+Math.random()*3}s ease-in-out infinite ${Math.random()*2}s`;staff.appendChild(l)}
+
+/* ── FLOATING NOTES ── */
+const noteChars=['♩','♪','♫','♬','𝅗𝅥','𝅘𝅥𝅮','♭','♮','♯','𝄞','𝄢'];
+const edColors=['rgba(201,150,58,0.2)','rgba(61,142,232,0.2)','rgba(139,92,246,0.2)','rgba(232,113,74,0.18)','rgba(45,212,160,0.18)','rgba(244,114,182,0.18)'];
+const notesLayer=document.getElementById('NOTES');
+for(let i=0;i<32;i++){
+  const n=document.createElement('div');
+  n.className='mnote';
+  n.textContent=noteChars[Math.floor(Math.random()*noteChars.length)];
+  const fs=12+Math.random()*22;
+  const dx=(Math.random()-.5)*120;
+  const dy=-(100+Math.random()*200);
+  const rot=(Math.random()-.5)*30;
+  const rot2=(Math.random()-.5)*20;
+  const dur=8+Math.random()*14;
+  const del=Math.random()*dur;
+  n.style.cssText=`left:${Math.random()*100}%;top:${60+Math.random()*40}%;--fs:${fs}px;--c:${edColors[Math.floor(Math.random()*edColors.length)]};--dur:${dur}s;--del:${del}s;--dx:${dx}px;--dy:${dy}px;--rot:${rot}deg;--rot2:${rot2}deg`;
+  notesLayer.appendChild(n);
+}
+
+/* ── EQUALIZER BARS ── */
+const measDiv=document.getElementById('MEASURES');
+const barColors=['#C9963A','#3D8EE8','#8B5CF6','#E8714A','#2DD4A0','#F472B6','#C9963A','#E8BE6A','#3D8EE8','#8B5CF6','#E8714A','#2DD4A0','#F472B6','#C9963A'];
+for(let i=0;i<32;i++){
+  const b=document.createElement('div');
+  b.className='measure';
+  const hmin=6+Math.random()*10;
+  const hmax=16+Math.random()*36;
+  const dur=0.7+Math.random()*1.2;
+  const del=Math.random()*1.5;
+  const c=barColors[Math.floor(Math.random()*barColors.length)];
+  b.style.cssText=`--c:${c};--hmin:${hmin}px;--hmax:${hmax}px;--dur:${dur}s;--del:${del}s;height:${hmin}px;opacity:0.7`;
+  measDiv.appendChild(b);
+}
+
+/* ── WAVEFORM ── */
+const canvas=document.getElementById('waveCanvas');
+const ctx=canvas.getContext('2d');
+let wt=0;
+const edColorList=['#C9963A','#3D8EE8','#8B5CF6','#E8714A','#2DD4A0','#F472B6'];
+
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=120;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+
+function drawWave(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const W=canvas.width, H=canvas.height;
+
+  edColorList.forEach((color,idx)=>{
+    const amp=8+idx*4;
+    const freq=0.008+idx*0.002;
+    const phase=wt*(0.4+idx*0.15)+idx*Math.PI/3;
+    const yBase=H*0.55+idx*2;
+
+    ctx.beginPath();
+    ctx.moveTo(0,yBase);
+    for(let x=0;x<=W;x+=2){
+      const y=yBase+Math.sin(x*freq+phase)*amp*Math.sin(wt*0.3+idx)*0.8
+              +Math.sin(x*freq*2.3-phase*0.7)*amp*0.35;
+      ctx.lineTo(x,y);
     }
-    ctx.putImageData(img, 0, 0);
-    frame++;
-    if (frame % 2 === 0) requestAnimationFrame(renderGrain);
-    else requestAnimationFrame(renderGrain);
-  }
-  renderGrain();
-})();
- 
-// ── Stars ────────────────────────────────────────────────────
-(function() {
-  const container = document.getElementById('stars');
-  const COUNT = 80;
-  for (let i = 0; i < COUNT; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `
-      left: ${Math.random()*100}%;
-      top:  ${Math.random()*100}%;
-      animation-duration: ${2 + Math.random()*4}s;
-      animation-delay:    ${Math.random()*6}s;
-      width:  ${Math.random() > .92 ? '2px' : '1px'};
-      height: ${Math.random() > .92 ? '2px' : '1px'};
-      opacity: 0;
-    `;
-    container.appendChild(s);
-  }
-})();
- 
-// ── Sound waves ──────────────────────────────────────────────
-(function() {
-  const wrap = document.getElementById('waves');
-  const BAR_COUNT = Math.floor(window.innerWidth / 5);
-  for (let i = 0; i < BAR_COUNT; i++) {
-    const b = document.createElement('div');
-    b.className = 'bar';
-    const minH = 8  + Math.random() * 30;
-    const maxH = 40 + Math.random() * 100;
-    const dur  = 0.6 + Math.random() * 1.8;
-    const delay = Math.random() * 2;
-    b.style.cssText = `
-      height: ${maxH}px;
-      --min: ${minH/maxH};
-      --max: 1;
-      animation-duration: ${dur}s;
-      animation-delay: ${delay}s;
-    `;
-    wrap.appendChild(b);
-  }
-})();
- 
-// ── Cursor glow ──────────────────────────────────────────────
-(function() {
-  const glow = document.getElementById('cursorGlow');
-  let mx = window.innerWidth/2, my = window.innerHeight/2;
-  let cx = mx, cy = my;
- 
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
- 
-  function loop() {
-    cx += (mx - cx) * .07;
-    cy += (my - cy) * .07;
-    glow.style.left = cx + 'px';
-    glow.style.top  = cy + 'px';
-    requestAnimationFrame(loop);
-  }
-  loop();
-})();
- 
-// ── Parallax title on mouse ──────────────────────────────────
-(function() {
-  const title = document.querySelector('.title-main');
-  document.addEventListener('mousemove', e => {
-    const rx = (e.clientX / window.innerWidth  - .5) * 12;
-    const ry = (e.clientY / window.innerHeight - .5) * 8;
-    title.style.transform = `perspective(800px) rotateY(${rx}deg) rotateX(${-ry}deg) translateY(0)`;
+    const grad=ctx.createLinearGradient(0,0,W,0);
+    grad.addColorStop(0,'transparent');
+    grad.addColorStop(0.2,color+'44');
+    grad.addColorStop(0.5,color+'99');
+    grad.addColorStop(0.8,color+'44');
+    grad.addColorStop(1,'transparent');
+    ctx.strokeStyle=grad;
+    ctx.lineWidth=idx===0?2:1.2;
+    ctx.stroke();
   });
-})();
- 
-// ── Animated progress dot cycling ───────────────────────────
-(function() {
-  const dots = document.querySelectorAll('.pdot');
-  let active = 0;
-  setInterval(() => {
-    dots[active].classList.remove('active');
-    active = (active + 1) % dots.length;
-    dots[active].classList.add('active');
-  }, 1200);
-})();
- 
-// ── Responsive waves rebuild ─────────────────────────────────
-window.addEventListener('resize', () => {
-  const wrap = document.getElementById('waves');
-  wrap.innerHTML = '';
-  const BAR_COUNT = Math.floor(window.innerWidth / 5);
-  for (let i = 0; i < BAR_COUNT; i++) {
-    const b = document.createElement('div');
-    b.className = 'bar';
-    const maxH = 40 + Math.random() * 100;
-    const minH = 8  + Math.random() * 30;
-    b.style.cssText = `
-      height: ${maxH}px;
-      --min: ${minH/maxH};
-      --max: 1;
-      animation-duration: ${0.6 + Math.random()*1.8}s;
-      animation-delay: ${Math.random()*2}s;
-    `;
-    wrap.appendChild(b);
-  }
+
+  wt+=0.022;
+  requestAnimationFrame(drawWave);
+}
+drawWave();
+
+/* ── INTERACTIVE: click spawns note ── */
+document.addEventListener('click',e=>{
+  const n=document.createElement('div');
+  n.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;font-size:${16+Math.random()*18}px;color:${edColorList[Math.floor(Math.random()*edColorList.length)]};pointer-events:none;z-index:500;transform:translate(-50%,-50%);animation:floatnote 1.4s ease forwards;--dur:1.4s;--del:0s;--dx:${(Math.random()-.5)*80}px;--dy:${-(40+Math.random()*80)}px;--rot:${(Math.random()-.5)*30}deg;--rot2:${(Math.random()-.5)*15}deg`;
+  n.textContent=noteChars[Math.floor(Math.random()*noteChars.length)];
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),1500);
 });
+
+/* ── HOVER CTA ── */
+const ctaBtn=document.querySelector('.cta-btn');
+if(ctaBtn){
+  ctaBtn.addEventListener('mouseenter',()=>{cur.style.transform='translate(-50%,-50%) scale(2.5)';curr.style.transform='translate(-50%,-50%) scale(0.6)'});
+  ctaBtn.addEventListener('mouseleave',()=>{cur.style.transform='translate(-50%,-50%) scale(1)';curr.style.transform='translate(-50%,-50%) scale(1)'});
+}
 </script>
 </body>
 </html>
- 
